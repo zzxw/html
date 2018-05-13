@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+	<meta charset="utf-8">
+    <title>图纸管理系统</title>
+	<link rel="stylesheet" href="css/login.css" />
+	<script type="text/javascript" src="js/jquery-2.1.4.min.js" ></script>
+</head>
+<body>
+    <div class="main">
+    	<div class="mainin">
+            <div class="mainin1">
+            	<ul>
+                	<li><span>用户名：</span><input name="loginName" type="text" id="loginName" placeholder="登录名" class="SearchKeyword" onblur="checkUserName();" onfocus="clear();">
+                	<span id="userInfo"></span></li>
+                    <li><span>密码：</span><input type="password" name="Possword" id="Possword" placeholder="密码"/ class="SearchKeyword2" onblur="checkPwd();" onfocus="clear();">
+                    	<span id="pwdInfo"></span>
+                    </li>
+                    <select id="identity">
+                    	<option value="admin">admin</option>
+                    	<option value="user">user</option>
+                    </select>
+                    <li><button class="tijiao" onclick="submit();">提交</button></li>
+                </ul>
+            </div>
+            <div class="footpage"><span style="" font-family:arial;""="">Copyright ?</span>2018hyit</div>
+        </div>
+    </div>
+<img src="images/loading.gif" id="loading" style=" display:none;position:absolute;" />
+<div id="POPLoading" class="cssPOPLoading">
+    <div style=" height:110px; border-bottom:1px solid #9a9a9a">
+        <div class="showMessge"></div>
+    </div>
+    <div style=" line-height:40px; font-size:14px; letter-spacing:1px;">
+        <a onclick="puc()">确定</a>
+    </div>
+</div>
+<div style="text-align:center;">
+</div>
+</body>
+	<script>
+		function clear() {
+			console.log(1);
+			$("#userInfo").html('');
+			$("#pwdInfo").html('');
+		}
+		function submit(){
+			if(checkUserName() && checkPwd()) {
+				var uName = $(".SearchKeyword").val();
+				var pwd = $(".SearchKeyword2").val();
+				var url = '';
+				if($("#identity").val() == 'admin'){
+					url = 'worker/login.do';
+				}else{
+					url = 'nUser/login.do';
+				}
+				$.ajax({
+					url : url,
+					data : {
+						uName : uName,
+						pwd : pwd
+					},
+					dataType : 'json',
+					success : function(result){
+						if(result.state == 1){
+							alert(result.message);
+						}else if(result.state == 0) {
+							if($("#identity").val() == 'admin'){
+								window.href = 'index.html?uName=' + result.data.uName;
+							}else{
+								window.href = 'index1.html?uName=' + result.data.uName;
+							}
+						}
+					}
+				})
+			}
+		}
+		function checkUserName() {
+			var userName = $(".SearchKeyword").val();
+			if(userName.trim() == ''){
+				$("#userInfo").html('用户名不能为空!!!');
+				return false;
+			}
+			return true;
+		}
+		function checkPwd() {
+			//var passwordReg = '^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$';
+			var pwd = $(".SearchKeyword2").val();
+			if(pwd.trim()==''){
+				$("#pwdInfo").html('密码不能为空!!!');
+				return false;
+			}
+			return true;
+		}
+	</script>
+</html>
